@@ -1,0 +1,15 @@
+#+Title: Lisp Implementation in C++
+#+Author: eval-me
+
+*(WORK IN PROGRESS)*
+This is a minimal lisp implementation in C++.
+
+* What's left:
++ Types
+  - Make list structure from scratch (list doesn't offer cdr)
+  - Maps (optional)
++ Parsing
+  - Everything
++ Evaluating
+  - Everything
++ Testing and Debug
