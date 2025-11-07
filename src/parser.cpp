@@ -1,7 +1,8 @@
+#include <memory>
 #include <vector>
 #include <string>
-#include "types.h"
 #include <iostream>
+#include "types.h"
 
 using namespace std;
 
@@ -17,52 +18,52 @@ namespace lisp {
     return false;
   }
 
-  unique_ptr<Expression> parseSymbol(vector<string> tokens, int &index) {
-    string tok = tokens[index];
+  unique_ptr<Expression> parseSymbol(vector<string> tokens, int *index) {
+    string tok = tokens[*index];
     return make_unique<Symbol>(tok);
   }
 
-  unique_ptr<Expression> parseNumber(vector <string> tokens, int &index) {
-    string tok = tokens[index];
+  unique_ptr<Expression> parseNumber(vector <string> tokens, int *index) {
+    string tok = tokens[*index];
     unique_ptr<Number> num;
-    if (tok.find('.')) // If it has a decimal place, treat it as a real number!
+    if (tok.find('.') < tok.size()) // If it has a decimal place, treat it as a real number!
       num.reset(new Real(stold(tok)));
     else
       num.reset(new Integer(stoll(tok)));
     return num;
   }
   
-  unique_ptr<Expression> parseAtom(vector<string> tokens, int &index) {
+  unique_ptr<Expression> parseAtom(vector<string> tokens, int *index) {
     unique_ptr<Expression> expr;
-    if (alpha(tokens[index][0])) expr = parseSymbol(tokens, index);
-    else if (num(tokens[index][0])) expr = parseNumber(tokens, index);
+    if (alpha(tokens[*index][0])) expr = parseSymbol(tokens, index);
+    else if (num(tokens[*index][0])) expr = parseNumber(tokens, index);
     // else error!
-
+    // (*index)++;
     return expr;
   }
 
-  unique_ptr<Expression> parseList(vector<string> tokens, int &index) {
-    cout << "Parsing list!" << endl;
-    unique_ptr<List> expr = make_unique<List>();
-
-    // If we reached the end return nothing
-    if (index >= tokens.size()) return nullptr;
+  unique_ptr<Expression> parseList(vector<string> tokens, int *index) {
+    if (*index >= tokens.size()) return nullptr;
    
-    string tok = tokens[index]; 
+    string tok = tokens[*index];
+
     if (tok == "(") {
-      index++;
-      expr->append(parseList(tokens, index));
+      (*index)++;
+      unique_ptr<List> l = make_unique<List>();      
+      while (tokens[*index] != ")") {
+	l->append(parseList(tokens, index));
+      }
+      (*index)++;
+      return l;
     }
     else if (tok == ")") {
-      return expr;
+      return nullptr;
     }
-    else {
-      expr->append(parseAtom(tokens, index));
-      index++;
-      expr->append(parseList(tokens, index));
+    else { // If it's an atom
+      unique_ptr<Expression> ret = parseAtom(tokens, index);
+      (*index)++;
+      return ret;
     }
-    
-    return expr;    
   }
   
   unique_ptr<Expression> parse(vector<string> tokens) {
@@ -71,14 +72,12 @@ namespace lisp {
       // TODO
       // throw new EmptyExpressionException();
     }
-
     int index = 0;
     if (tokens[0] == "(") {
-      index++;
-      ast = parseList(tokens, index);
+      ast = parseList(tokens, &index);
     }
     else
-      ast = parseAtom(tokens, index);
+      ast = parseAtom(tokens, &index);
     return ast;
   }
 }

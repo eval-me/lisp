@@ -18,7 +18,7 @@ namespace lisp {
     return this->m_Identifier;
   }
   void Symbol::print() {
-    cout << this->getSymbol() << " ";
+    cout << "Symbol: " << this->getSymbol() << " ";
   }
 
   /* Number functions */
@@ -32,7 +32,7 @@ namespace lisp {
     return this->m_Value;
   }
   void Integer::print() {
-    cout << this->getValue() << " ";
+    cout << "Integer: " << this->getValue() << " ";
   }
 
   /* Real Functions */
@@ -44,7 +44,7 @@ namespace lisp {
   }
   
   void Real::print() {
-    cout << this->getValue() << " ";
+    cout << "Real: " << this->getValue() << " ";
   }
 
   void List::append(unique_ptr<Expression> e) {

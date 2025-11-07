@@ -10,8 +10,10 @@ This is a minimal lisp implementation in C++.
 + Lexing
   - Done
 + Parsing
-  - Need a fix
+  - Finished minimal correct parsing (Add more features, low priority)
 + Evaluating
-  - Everything
+  - Built-ins
+  - Environments
+  - Evaluating logic
 + Testing and Debug
   - Not yet done
