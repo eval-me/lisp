@@ -69,14 +69,4 @@ namespace lisp {
     }
     cout << endl;
   }
-
-  int main() {
-    string input;
-    getline(cin, input);
-    cout << "Your input: " << input << endl;
-    printTokens(tokenize(input));
-  
-  
-    return 0;
-  }
 }

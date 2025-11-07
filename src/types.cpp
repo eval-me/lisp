@@ -1,74 +1,87 @@
 #include <string>
-#include <list>
+#include <iostream>
+#include <memory>
+
+#include "types.h"
 
 using namespace std;
 
 namespace lisp {
-  class Expression {
-  public:
-    virtual ~Expression();
-  };
+  /* Expression functions */
+  /* Empty, interface */
 
-  class Symbol : public Expression {
-  private:
-    string symbol;
-  public:
-    Symbol(string symbol) {
-      this->symbol = symbol;
-    }
-    virtual string getSymbol() {
-      return this->symbol;
-    }
-  };
-
-  class Number : public Expression {
-    // FIXME (probably)
-  };
-
-  class Integer : public Number {
-  private:
-    long long value;
-  public:
-    Integer(long long value) {
-      this->value = value;
-    }
-    virtual long long getValue() {
-      return this->value;
-    }
-  };
-
-  class Real : public Number {
-  private:
-    long double value;
-  public:
-    Real(long double value) {
-      this->value = value;
-    }
-    virtual long double getValue() {
-      return this->value;
-    }
-  };
-
-  class List : public Expression {
-  private:
-    list<Expression> list;
-  public:
-    List() {
-      
-    }
-    // FIXME TRANSITION INTO AN ACTUAL LINKED LIST STRUCTURE!!!
-    virtual void append(Expression e) {
-      this->list.push_back(e);
-    }
-    // virtual Expression car() {
-    //   return list.front();
-    // }
-
-    // virtual List cdr() {
-    //   return list.
-    // }
-  };
-
-  // TODO maybe add maps
+  /* Symbol functions */
   
+  Symbol::Symbol(std::string id) : m_Identifier(id) {}
+  
+  string Symbol::getSymbol() {
+    return this->m_Identifier;
+  }
+  void Symbol::print() {
+    cout << this->getSymbol() << " ";
+  }
+
+  /* Number functions */
+  /* Empty, interface */
+
+  /* Integer functions */
+  
+  Integer::Integer(long long value) : m_Value(value) {}
+  
+  long long Integer::getValue() {
+    return this->m_Value;
+  }
+  void Integer::print() {
+    cout << this->getValue() << " ";
+  }
+
+  /* Real Functions */
+  
+  Real::Real(long double value) : m_Value(value) {}
+  
+  long double Real::getValue() {
+    return this->m_Value;
+  }
+  
+  void Real::print() {
+    cout << this->getValue() << " ";
+  }
+
+  void List::append(unique_ptr<Expression> e) {
+    if (!this->m_Head) {
+      this->m_Head = std::move(e);
+    }
+    else if (!this->m_Tail) {
+      this->m_Tail = make_unique<List>();
+      this->m_Tail->append(std::move(e));
+    }
+    else {
+      this->m_Tail->append(std::move(e));
+    }
+  }
+
+  Expression* List::car() {
+    return this->m_Head.get();
+  }
+
+  List* List::cdr() {
+    return this->m_Tail.get();
+  }
+
+  void List::print(bool start) {
+    if (start)
+      cout << "(";
+    if (m_Head)
+      m_Head->print();
+    if (m_Tail)
+      m_Tail->print(false);
+    if (start)
+      cout << ")";
+  }
+
+  void List::print() {
+    this->print(true);
+  }
 }
+  
+

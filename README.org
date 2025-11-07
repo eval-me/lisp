@@ -6,10 +6,12 @@ This is a minimal lisp implementation in C++.
 
 * What's left:
 + Types
-  - Make list structure from scratch (list doesn't offer cdr)
-  - Maps (optional)
+  - Done
++ Lexing
+  - Done
 + Parsing
-  - Everything
+  - Need a fix
 + Evaluating
   - Everything
 + Testing and Debug
+  - Not yet done
